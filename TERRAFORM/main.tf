@@ -140,3 +140,75 @@ resource "libvirt_domain" "srvlan" {
     autoport = true
   }
 }
+# ─────────────────────────────────────────
+# Volume disque srvdmz
+# ─────────────────────────────────────────
+resource "libvirt_volume" "srvdmz" {
+  depends_on = [null_resource.download_image]
+
+  name   = "srvdmz-os.qcow2"
+  pool   = var.pool
+  source = local.image_path
+  format = "qcow2"
+}
+# ─────────────────────────────────────────
+# Cloud-init srvdmz
+# ─────────────────────────────────────────
+data "cloudinit_config" "srvdmz" {
+  gzip          = false
+  base64_encode = false
+
+  part {
+    content_type = "text/cloud-config"
+    content = templatefile("${path.module}/cloud_init.cfg", {
+      hostname   = "srvdmz"
+      fqdn       = "srvdmz.lab.local"
+      public_key = local.public_key
+    })
+  }
+
+  part {
+    content_type = "text/network-config"
+    content      = file("${path.module}/network_config_dhcp.cfg")
+  }
+}
+
+resource "libvirt_cloudinit_disk" "srvdmz" {
+  name      = "srvdmz-cloudinit.iso"
+  pool      = var.pool
+  user_data = data.cloudinit_config.srvdmz.rendered
+}
+# ─────────────────────────────────────────
+# VM srvdmz
+# ─────────────────────────────────────────
+resource "libvirt_domain" "srvdmz" {
+  name   = "srvdmz"
+  memory = 1024
+  vcpu   = 1
+
+  disk {
+    volume_id = libvirt_volume.srvdmz.id
+  }
+
+  network_interface {
+    network_id     = libvirt_network.bootstrap.id
+    wait_for_lease = true
+  }
+
+  network_interface {
+    network_id = libvirt_network.dmz.id
+  }
+
+  cloudinit = libvirt_cloudinit_disk.srvdmz.id
+
+  console {
+    type        = "pty"
+    target_type = "serial"
+    target_port = "0"
+  }
+
+  graphics {
+    type     = "spice"
+    autoport = true
+  }
+}
