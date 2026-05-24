@@ -1,0 +1,19 @@
+---
+- name: Mise à jour des paquets
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: Installation des outils de base
+  apt:
+    name:
+      - vim
+      - curl
+      - iproute2 
+      - htop
+      - python3
+    state: present
+
+- name: Configuration du timezone
+  timezone:
+    name: Europe/Paris

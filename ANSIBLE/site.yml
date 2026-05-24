@@ -1,0 +1,6 @@
+---
+- name: Configuration commune toutes VMs
+  hosts: all
+  become: true
+  roles:
+    - common
