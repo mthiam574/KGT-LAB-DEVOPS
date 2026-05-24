@@ -1,0 +1,142 @@
+# ─────────────────────────────────────────
+# Locals
+# ─────────────────────────────────────────
+locals {
+  image_path = "${path.module}/${var.image_name}"
+}
+# ─────────────────────────────────────────
+# Réseau bootstrap (NAT temporaire)
+# ─────────────────────────────────────────
+resource "libvirt_network" "bootstrap" {
+  name      = "bootstrap"
+  mode      = "nat"
+  addresses = ["192.168.100.0/24"]
+
+  dhcp {
+    enabled = true
+  }
+
+  dns {
+    enabled = true
+  }
+}
+# ─────────────────────────────────────────
+# Réseau LAN (192.168.2.0/24)
+# ─────────────────────────────────────────
+resource "libvirt_network" "lan" {
+  name      = "lab-lan"
+  mode      = "none"
+  addresses = ["192.168.2.0/24"]
+
+  dhcp {
+    enabled = false
+  }
+}
+# ─────────────────────────────────────────
+# Réseau DMZ (192.168.3.0/24)
+# ─────────────────────────────────────────
+resource "libvirt_network" "dmz" {
+  name      = "lab-dmz"
+  mode      = "none"
+  addresses = ["192.168.3.0/24"]
+
+  dhcp {
+    enabled = false
+  }
+}
+# ─────────────────────────────────────────
+# Téléchargement image Debian si absente
+# ─────────────────────────────────────────
+resource "null_resource" "download_image" {
+  triggers = {
+    image_url = var.image_url
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOF
+      if [ ! -f "${local.image_path}" ]; then
+        echo ">>> Téléchargement image Debian..."
+        wget -q -O "${local.image_path}" "${var.image_url}"
+      else
+        echo ">>> Image déjà présente, on continue."
+      fi
+    EOF
+  }
+}
+# ─────────────────────────────────────────
+# Volume disque srvlan
+# ─────────────────────────────────────────
+resource "libvirt_volume" "srvlan" {
+  depends_on = [null_resource.download_image]
+
+  name   = "srvlan-os.qcow2"
+  pool   = var.pool
+  source = local.image_path
+  format = "qcow2"
+}
+# ─────────────────────────────────────────
+# Cloud-init srvlan
+# ─────────────────────────────────────────
+locals {
+  public_key = file(pathexpand(var.ssh_pubkey_path))
+  fqdn       = "srvlan.lab.local"
+}
+
+data "cloudinit_config" "srvlan" {
+  gzip          = false
+  base64_encode = false
+
+  part {
+    content_type = "text/cloud-config"
+    content = templatefile("${path.module}/cloud_init.cfg", {
+      hostname   = "srvlan"
+      fqdn       = local.fqdn
+      public_key = local.public_key
+    })
+  }
+
+  part {
+    content_type = "text/network-config"
+    content      = file("${path.module}/network_config_dhcp.cfg")
+  }
+}
+
+resource "libvirt_cloudinit_disk" "srvlan" {
+  name      = "srvlan-cloudinit.iso"
+  pool      = var.pool
+  user_data = data.cloudinit_config.srvlan.rendered
+}
+# ─────────────────────────────────────────
+# VM srvlan
+# ─────────────────────────────────────────
+resource "libvirt_domain" "srvlan" {
+  name   = "srvlan"
+  memory = 1024
+  vcpu   = 1
+
+  disk {
+    volume_id = libvirt_volume.srvlan.id
+  }
+
+  network_interface {
+    network_id     = libvirt_network.bootstrap.id
+    wait_for_lease = true
+  }
+
+  network_interface {
+    network_id = libvirt_network.lan.id
+  }
+
+  cloudinit = libvirt_cloudinit_disk.srvlan.id
+
+  console {
+    type        = "pty"
+    target_type = "serial"
+    target_port = "0"
+  }
+
+  graphics {
+    type     = "spice"
+    autoport = true
+  }
+}
