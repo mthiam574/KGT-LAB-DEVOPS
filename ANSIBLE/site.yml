@@ -4,3 +4,9 @@
   become: true
   roles:
     - common
+
+- name: Configuration réseau srvlan
+  hosts: srvlan
+  become: true
+  roles:
+    - network

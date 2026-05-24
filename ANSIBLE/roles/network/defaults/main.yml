@@ -1,0 +1,12 @@
+---
+# Interfaces
+iface_bootstrap: ens3
+iface_lan: ens4
+iface_dmz: ens5
+
+# Adresses IP fixes
+srvlan_lan_ip: 192.168.2.2
+srvlan_lan_mask: 24
+srvlan_dmz_ip: 192.168.3.1
+srvlan_dmz_mask: 24
+srvlan_gateway: 192.168.2.1

@@ -1,0 +1,49 @@
+---
+- name: Installation NetworkManager
+  apt:
+    name:
+      - network-manager
+    state: present
+
+- name: Configuration IP fixe interface LAN
+  community.general.nmcli:
+    conn_name: lan
+    ifname: "{{ iface_lan }}"
+    type: ethernet
+    ip4: "{{ srvlan_lan_ip }}/{{ srvlan_lan_mask }}"
+    state: present
+    autoconnect: true
+
+- name: Configuration IP fixe interface DMZ
+  community.general.nmcli:
+    conn_name: dmz
+    ifname: "{{ iface_dmz }}"
+    type: ethernet
+    ip4: "{{ srvlan_dmz_ip }}/{{ srvlan_dmz_mask }}"
+    state: present
+    autoconnect: true
+
+- name: Activation du routage ip_forward
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Installation iptables-persistent
+  apt:
+    name:
+      - iptables-persistent
+      - netfilter-persistent
+    state: present
+
+- name: Règle NAT MASQUERADE
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    out_interface: "{{ iface_bootstrap }}"
+    jump: MASQUERADE
+
+- name: Sauvegarde règles iptables
+  shell: iptables-save > /etc/iptables/rules.v4
