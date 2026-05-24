@@ -126,7 +126,11 @@ resource "libvirt_domain" "srvlan" {
   network_interface {
     network_id = libvirt_network.lan.id
   }
-
+  
+  network_interface {
+    network_id = libvirt_network.dmz.id
+  }
+  
   cloudinit = libvirt_cloudinit_disk.srvlan.id
 
   console {
@@ -358,5 +362,24 @@ resource "libvirt_domain" "vm2" {
   graphics {
     type     = "spice"
     autoport = true
+  }
+}
+# ─────────────────────────────────────────
+# Génération automatique inventaire Ansible
+# ─────────────────────────────────────────
+resource "null_resource" "gen_inventory" {
+  depends_on = [
+    libvirt_domain.srvlan,
+    libvirt_domain.srvdmz,
+    libvirt_domain.vm1,
+    libvirt_domain.vm2
+  ]
+
+  triggers = {
+    always_run = timestamp()
+  }
+
+  provisioner "local-exec" {
+    command = "bash ${path.module}/../ANSIBLE/inventory/gen_inventory.sh"
   }
 }
