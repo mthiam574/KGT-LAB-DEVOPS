@@ -33,12 +33,12 @@ resource "libvirt_network" "lan" {
   }
 }
 # ─────────────────────────────────────────
-# Réseau DMZ (192.168.3.0/24)
+# Réseau DMZ (192.168.4.0/24)
 # ─────────────────────────────────────────
 resource "libvirt_network" "dmz" {
   name      = "lab-dmz"
   mode      = "none"
-  addresses = ["192.168.3.0/24"]
+  addresses = ["192.168.4.0/24"]
 
   dhcp {
     enabled = false
