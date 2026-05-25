@@ -6,7 +6,7 @@
     - common
 
 - name: Configuration réseau
-  hosts: srvlan,srvdmz
+  hosts: srvlan,srvdmz,vm1,vm2
   become: true
   roles:
     - network

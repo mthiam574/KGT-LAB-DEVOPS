@@ -4,3 +4,6 @@
 
 - include_tasks: srvdmz.yml
   when: inventory_hostname == "srvdmz"
+
+- include_tasks: vm.yml
+  when: inventory_hostname in ["vm1", "vm2"]

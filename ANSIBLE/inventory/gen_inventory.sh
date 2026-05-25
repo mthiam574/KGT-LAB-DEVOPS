@@ -28,14 +28,13 @@ all:
           ansible_host: ${SRVLAN}
         vm1:
           ansible_host: ${VM1}
+          vm_lan_ip: 192.168.3.2
         vm2:
           ansible_host: ${VM2}
+          vm_lan_ip: 192.168.3.4
 
     dmz:
       hosts:
         srvdmz:
           ansible_host: ${SRVDMZ}
 EOF
-
-echo "✅ Inventaire généré :"
-cat "$(dirname "$0")/hosts.yml"

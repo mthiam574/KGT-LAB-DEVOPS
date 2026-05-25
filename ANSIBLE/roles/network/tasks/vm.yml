@@ -1,0 +1,15 @@
+---
+- name: Installation NetworkManager
+  apt:
+    name: network-manager
+    state: present
+
+- name: Configuration IP fixe interface LAN
+  community.general.nmcli:
+    conn_name: lan
+    ifname: ens4
+    type: ethernet
+    ip4: "{{ vm_lan_ip }}/24"
+    gw4: "192.168.3.1"
+    state: present
+    autoconnect: true
