@@ -3,7 +3,9 @@
 # ─────────────────────────────────────────
 locals {
   image_path = "${path.module}/${var.image_name}"
+  public_key = file(pathexpand(var.ssh_pubkey_path))
 }
+
 # ─────────────────────────────────────────
 # Réseau bootstrap (NAT temporaire)
 # ─────────────────────────────────────────
@@ -20,11 +22,27 @@ resource "libvirt_network" "bootstrap" {
     enabled = true
   }
 }
+
 # ─────────────────────────────────────────
-# Réseau LAN (192.168.2.0/24)
+# Réseau LAN interne (192.168.3.0/24)
+# srvlan ↔ vm1/vm2
 # ─────────────────────────────────────────
 resource "libvirt_network" "lan" {
   name      = "lab-lan"
+  mode      = "none"
+  addresses = ["192.168.3.0/24"]
+
+  dhcp {
+    enabled = false
+  }
+}
+
+# ─────────────────────────────────────────
+# Réseau GREEN (192.168.2.0/24)
+# IPFire ↔ srvlan
+# ─────────────────────────────────────────
+resource "libvirt_network" "green" {
+  name      = "lab-green"
   mode      = "none"
   addresses = ["192.168.2.0/24"]
 
@@ -32,8 +50,10 @@ resource "libvirt_network" "lan" {
     enabled = false
   }
 }
+
 # ─────────────────────────────────────────
 # Réseau DMZ (192.168.4.0/24)
+# IPFire ↔ srvdmz
 # ─────────────────────────────────────────
 resource "libvirt_network" "dmz" {
   name      = "lab-dmz"
@@ -44,6 +64,7 @@ resource "libvirt_network" "dmz" {
     enabled = false
   }
 }
+
 # ─────────────────────────────────────────
 # Téléchargement image Debian si absente
 # ─────────────────────────────────────────
@@ -63,25 +84,21 @@ resource "null_resource" "download_image" {
     EOF
   }
 }
+
 # ─────────────────────────────────────────
 # Volume disque srvlan
 # ─────────────────────────────────────────
 resource "libvirt_volume" "srvlan" {
   depends_on = [null_resource.download_image]
-
-  name   = "srvlan-os.qcow2"
-  pool   = var.pool
-  source = local.image_path
-  format = "qcow2"
+  name       = "srvlan-os.qcow2"
+  pool       = var.pool
+  source     = local.image_path
+  format     = "qcow2"
 }
+
 # ─────────────────────────────────────────
 # Cloud-init srvlan
 # ─────────────────────────────────────────
-locals {
-  public_key = file(pathexpand(var.ssh_pubkey_path))
-  fqdn       = "srvlan.lab.local"
-}
-
 data "cloudinit_config" "srvlan" {
   gzip          = false
   base64_encode = false
@@ -90,7 +107,7 @@ data "cloudinit_config" "srvlan" {
     content_type = "text/cloud-config"
     content = templatefile("${path.module}/cloud_init.cfg", {
       hostname   = "srvlan"
-      fqdn       = local.fqdn
+      fqdn       = "srvlan.lab.local"
       public_key = local.public_key
     })
   }
@@ -106,6 +123,7 @@ resource "libvirt_cloudinit_disk" "srvlan" {
   pool      = var.pool
   user_data = data.cloudinit_config.srvlan.rendered
 }
+
 # ─────────────────────────────────────────
 # VM srvlan
 # ─────────────────────────────────────────
@@ -126,11 +144,15 @@ resource "libvirt_domain" "srvlan" {
   network_interface {
     network_id = libvirt_network.lan.id
   }
-  
+
+  network_interface {
+    network_id = libvirt_network.green.id
+  }
+
   network_interface {
     network_id = libvirt_network.dmz.id
   }
-  
+
   cloudinit = libvirt_cloudinit_disk.srvlan.id
 
   console {
@@ -144,17 +166,18 @@ resource "libvirt_domain" "srvlan" {
     autoport = true
   }
 }
+
 # ─────────────────────────────────────────
 # Volume disque srvdmz
 # ─────────────────────────────────────────
 resource "libvirt_volume" "srvdmz" {
   depends_on = [null_resource.download_image]
-
-  name   = "srvdmz-os.qcow2"
-  pool   = var.pool
-  source = local.image_path
-  format = "qcow2"
+  name       = "srvdmz-os.qcow2"
+  pool       = var.pool
+  source     = local.image_path
+  format     = "qcow2"
 }
+
 # ─────────────────────────────────────────
 # Cloud-init srvdmz
 # ─────────────────────────────────────────
@@ -182,6 +205,7 @@ resource "libvirt_cloudinit_disk" "srvdmz" {
   pool      = var.pool
   user_data = data.cloudinit_config.srvdmz.rendered
 }
+
 # ─────────────────────────────────────────
 # VM srvdmz
 # ─────────────────────────────────────────
@@ -216,16 +240,16 @@ resource "libvirt_domain" "srvdmz" {
     autoport = true
   }
 }
+
 # ─────────────────────────────────────────
 # Volume disque vm1
 # ─────────────────────────────────────────
 resource "libvirt_volume" "vm1" {
   depends_on = [null_resource.download_image]
-
-  name   = "vm1-os.qcow2"
-  pool   = var.pool
-  source = local.image_path
-  format = "qcow2"
+  name       = "vm1-os.qcow2"
+  pool       = var.pool
+  source     = local.image_path
+  format     = "qcow2"
 }
 
 # ─────────────────────────────────────────
@@ -290,16 +314,16 @@ resource "libvirt_domain" "vm1" {
     autoport = true
   }
 }
+
 # ─────────────────────────────────────────
 # Volume disque vm2
 # ─────────────────────────────────────────
 resource "libvirt_volume" "vm2" {
   depends_on = [null_resource.download_image]
-
-  name   = "vm2-os.qcow2"
-  pool   = var.pool
-  source = local.image_path
-  format = "qcow2"
+  name       = "vm2-os.qcow2"
+  pool       = var.pool
+  source     = local.image_path
+  format     = "qcow2"
 }
 
 # ─────────────────────────────────────────
@@ -364,6 +388,7 @@ resource "libvirt_domain" "vm2" {
     autoport = true
   }
 }
+
 # ─────────────────────────────────────────
 # Génération automatique inventaire Ansible
 # ─────────────────────────────────────────

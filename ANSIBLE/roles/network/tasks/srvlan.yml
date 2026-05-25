@@ -1,8 +1,7 @@
 ---
 - name: Installation NetworkManager
   apt:
-    name:
-      - network-manager
+    name: network-manager
     state: present
 
 - name: Configuration IP fixe interface LAN
@@ -14,11 +13,14 @@
     state: present
     autoconnect: true
 
-- name: Suppression ancienne connexion DMZ si existante
+- name: Configuration IP fixe interface GREEN
   community.general.nmcli:
-    conn_name: dmz
-    state: absent
-  ignore_errors: true
+    conn_name: green
+    ifname: "{{ iface_green }}"
+    type: ethernet
+    ip4: "{{ srvlan_green_ip }}/{{ srvlan_green_mask }}"
+    state: present
+    autoconnect: true
 
 - name: Configuration IP fixe interface DMZ
   community.general.nmcli:
@@ -30,7 +32,7 @@
     autoconnect: true
 
 - name: Activation du routage ip_forward
-  sysctl:
+  ansible.posix.sysctl:
     name: net.ipv4.ip_forward
     value: '1'
     sysctl_set: yes
@@ -45,7 +47,7 @@
     state: present
 
 - name: Règle NAT MASQUERADE
-  iptables:
+  ansible.builtin.iptables:
     table: nat
     chain: POSTROUTING
     out_interface: "{{ iface_bootstrap }}"
