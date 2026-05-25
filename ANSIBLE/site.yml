@@ -5,8 +5,8 @@
   roles:
     - common
 
-- name: Configuration réseau srvlan
-  hosts: srvlan
+- name: Configuration réseau
+  hosts: srvlan,srvdmz
   become: true
   roles:
     - network

@@ -1,0 +1,16 @@
+---
+- name: Installation NetworkManager
+  apt:
+    name: network-manager
+    state: present
+
+- name: Configuration IP fixe interface DMZ
+  community.general.nmcli:
+    conn_name: dmz
+    ifname: ens4
+    type: ethernet
+    ip4: "192.168.4.2/24"
+    gw4: "192.168.4.1"
+    state: present
+    autoconnect: true
+ 
