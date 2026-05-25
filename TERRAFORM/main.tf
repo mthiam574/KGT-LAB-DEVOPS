@@ -149,9 +149,6 @@ resource "libvirt_domain" "srvlan" {
     network_id = libvirt_network.green.id
   }
 
-  network_interface {
-    network_id = libvirt_network.dmz.id
-  }
 
   cloudinit = libvirt_cloudinit_disk.srvlan.id
 

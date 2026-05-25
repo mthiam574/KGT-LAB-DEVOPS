@@ -22,15 +22,6 @@
     state: present
     autoconnect: true
 
-- name: Configuration IP fixe interface DMZ
-  community.general.nmcli:
-    conn_name: dmz
-    ifname: "{{ iface_dmz }}"
-    type: ethernet
-    ip4: "{{ srvlan_dmz_ip }}/{{ srvlan_dmz_mask }}"
-    state: present
-    autoconnect: true
-
 - name: Activation du routage ip_forward
   ansible.posix.sysctl:
     name: net.ipv4.ip_forward
