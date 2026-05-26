@@ -65,6 +65,20 @@ resource "libvirt_network" "dmz" {
   }
 }
 # ─────────────────────────────────────────
+# Réseau isolé ovs ↔ vm1
+# ─────────────────────────────────────────
+resource "libvirt_network" "ovs_vm1" {
+  name = "ovs-vm1"
+  mode = "none"
+}
+# ─────────────────────────────────────────
+# Réseau isolé ovs ↔ vm2
+# ─────────────────────────────────────────
+resource "libvirt_network" "ovs_vm2" {
+  name = "ovs-vm2"
+  mode = "none"
+}
+# ─────────────────────────────────────────
 # Réseau RED/WAN (10.0.0.0/24)
 # IPFire WAN
 # ─────────────────────────────────────────
@@ -308,7 +322,7 @@ resource "libvirt_domain" "vm1" {
   }
 
   network_interface {
-    network_id = libvirt_network.lan.id
+    network_id = libvirt_network.ovs_vm1.id
   }
 
   cloudinit = libvirt_cloudinit_disk.vm1.id
@@ -382,7 +396,7 @@ resource "libvirt_domain" "vm2" {
   }
 
   network_interface {
-    network_id = libvirt_network.lan.id
+    network_id = libvirt_network.ovs_vm2.id
   }
 
   cloudinit = libvirt_cloudinit_disk.vm2.id
@@ -399,50 +413,116 @@ resource "libvirt_domain" "vm2" {
   }
 }
 # ─────────────────────────────────────────
+# Volume disque ovs
+# ─────────────────────────────────────────
+resource "libvirt_volume" "ovs" {
+  depends_on = [null_resource.download_image]
+  name       = "ovs-os.qcow2"
+  pool       = var.pool
+  source     = local.image_path
+  format     = "qcow2"
+}
+# ─────────────────────────────────────────
+# Cloud-init ovs
+# ─────────────────────────────────────────
+data "cloudinit_config" "ovs" {
+  gzip          = false
+  base64_encode = false
+  part {
+    content_type = "text/cloud-config"
+    content = templatefile("${path.module}/cloud_init.cfg", {
+      hostname   = "ovs"
+      fqdn       = "ovs.lab.local"
+      public_key = local.public_key
+    })
+  }
+}
+resource "libvirt_cloudinit_disk" "ovs" {
+  name      = "ovs-cloudinit.iso"
+  pool      = var.pool
+  user_data = data.cloudinit_config.ovs.rendered
+}
+# ─────────────────────────────────────────
+# VM ovs (Open vSwitch)
+# ─────────────────────────────────────────
+resource "libvirt_domain" "ovs" {
+  name   = "ovs"
+  memory = 1024
+  vcpu   = 2
+  disk {
+    volume_id = libvirt_volume.ovs.id
+  }
+  network_interface {
+    network_id     = libvirt_network.bootstrap.id
+    wait_for_lease = true
+  }
+  network_interface {
+    network_id     = libvirt_network.lan.id
+    wait_for_lease = false
+  }
+  network_interface {
+    network_id     = libvirt_network.ovs_vm1.id
+    wait_for_lease = false
+  }
+  network_interface {
+    network_id     = libvirt_network.ovs_vm2.id
+    wait_for_lease = false
+  }
+  cloudinit = libvirt_cloudinit_disk.ovs.id
+  console {
+    type        = "pty"
+    target_type = "serial"
+    target_port = "0"
+  }
+  graphics {
+    type     = "spice"
+    autoport = true
+  }
+}
+# ─────────────────────────────────────────
 # Téléchargement ISO IPFire si absent
 # ─────────────────────────────────────────
-resource "null_resource" "download_ipfire" {
-  triggers = {
-    iso_url = var.ipfire_iso_url
-  }
-
-  provisioner "local-exec" {
-    command = <<-EOF
-      if [ ! -f "${path.module}/${var.ipfire_iso_name}" ]; then
-        echo ">>> Téléchargement ISO IPFire..."
-        wget -q -O "${path.module}/${var.ipfire_iso_name}" "${var.ipfire_iso_url}"
-      else
-        echo ">>> ISO IPFire déjà présent, on continue."
-      fi
-    EOF
-  }
-}
-
-# ─────────────────────────────────────────
-# Volume ISO IPFire
-# ─────────────────────────────────────────
-resource "libvirt_volume" "ipfire_iso" {
-  depends_on = [null_resource.download_ipfire]
-  name       = var.ipfire_iso_name
-  pool       = var.pool
-  source     = "${path.module}/${var.ipfire_iso_name}"
-  format     = "raw"
-}
-# ─────────────────────────────────────────
-# Volume disque srvsec (IPFire)
+#resource "null_resource" "download_ipfire" {
+#  triggers = {
+#    iso_url = var.ipfire_iso_url
+#  }
+#
+#  provisioner "local-exec" {
+#    command = <<-EOF
+#      if [ ! -f "${path.module}/${var.ipfire_iso_name}" ]; then
+#        echo ">>> Téléchargement ISO IPFire..."
+#        wget -q -O "${path.module}/${var.ipfire_iso_name}" "${var.ipfire_iso_url}"
+#      else
+#        echo ">>> ISO IPFire déjà présent, on continue."
+#      fi
+#    EOF
+#  }
+#}
+#
+## ─────────────────────────────────────────
+## Volume ISO IPFire
+## ─────────────────────────────────────────
+#resource "libvirt_volume" "ipfire_iso" {
+#  depends_on = [null_resource.download_ipfire]
+#  name       = var.ipfire_iso_name
+#  pool       = var.pool
+#  source     = "${path.module}/${var.ipfire_iso_name}"
+#  format     = "raw"
+#}
+## ─────────────────────────────────────────
+## Volume disque srvsec (IPFire)
 # ─────────────────────────────────────────
 resource "libvirt_volume" "srvsec" {
   name   = "srvsec-os.qcow2"
   pool   = var.pool
   format = "qcow2"
-  size   = 21474836480
+  source = "/var/lib/libvirt/images/ipfire-golden.qcow2"
 }
 
 # ─────────────────────────────────────────
 # VM srvsec (IPFire)
 # ─────────────────────────────────────────
 resource "libvirt_domain" "srvsec" {
-  depends_on = [null_resource.download_ipfire]
   name   = "srvsec"
   memory = 2048
   vcpu   = 2
@@ -451,8 +531,7 @@ resource "libvirt_domain" "srvsec" {
     volume_id = libvirt_volume.srvsec.id
   }
   disk {
-    volume_id = libvirt_volume.ipfire_iso.id
-    scsi      = false
+    volume_id = libvirt_volume.srvsec.id
   }
 
   network_interface {
@@ -494,7 +573,8 @@ resource "null_resource" "gen_inventory" {
     libvirt_domain.srvlan,
     libvirt_domain.srvdmz,
     libvirt_domain.vm1,
-    libvirt_domain.vm2
+    libvirt_domain.vm2,
+    libvirt_domain.ovs
   ]
 
   triggers = {
