@@ -1,0 +1,76 @@
+---
+- name: Installation d Open vSwitch
+  apt:
+    name: openvswitch-switch
+    state: present
+    update_cache: yes
+
+- name: Verification du service openvswitch-switch
+  systemd:
+    name: openvswitch-switch
+    state: started
+    enabled: yes
+
+- name: Creation bridge br0
+  openvswitch_bridge:
+    bridge: br0
+    state: present
+
+- name: Creation bridge br1
+  openvswitch_bridge:
+    bridge: br1
+    state: present
+
+- name: Creation bridge br2
+  openvswitch_bridge:
+    bridge: br2
+    state: present
+
+- name: Attachement ens4 a br0
+  openvswitch_port:
+    bridge: br0
+    port: ens4
+    state: present
+
+- name: Attachement ens5 a br1
+  openvswitch_port:
+    bridge: br1
+    port: ens5
+    state: present
+
+- name: Attachement ens6 a br2
+  openvswitch_port:
+    bridge: br2
+    port: ens6
+    state: present
+
+- name: Ports patch br0 br1 et br1 br2
+  command: >
+    ovs-vsctl
+    -- add-port br0 br0-patch0
+    -- set interface br0-patch0 type=patch options:peer=br1-patch0
+    -- add-port br1 br1-patch0
+    -- set interface br1-patch0 type=patch options:peer=br0-patch0
+    -- add-port br1 br1-patch1
+    -- set interface br1-patch1 type=patch options:peer=br2-patch0
+    -- add-port br2 br2-patch0
+    -- set interface br2-patch0 type=patch options:peer=br1-patch1
+  register: patch_result
+  changed_when: patch_result.rc == 0
+  failed_when: patch_result.rc != 0 and 'already exists' not in patch_result.stderr
+
+- name: Configuration IP br0 via systemd-networkd
+  copy:
+    dest: /etc/systemd/network/10-br0.network
+    content: |
+      [Match]
+      Name=br0
+
+      [Network]
+      Address=192.168.3.15/24
+      Gateway=192.168.3.1
+  notify: restart networkd
+
+- name: Activation br0
+  command: ip link set br0 up
+  changed_when: false

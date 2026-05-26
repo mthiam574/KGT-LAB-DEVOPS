@@ -10,3 +10,8 @@
   become: true
   roles:
     - network
+- name: Configuration Open vSwitch
+  hosts: ovs
+  become: true
+  roles:
+    - ovs
