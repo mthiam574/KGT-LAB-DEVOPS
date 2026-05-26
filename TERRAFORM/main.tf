@@ -536,22 +536,23 @@ resource "libvirt_domain" "srvsec" {
 
   network_interface {
     network_id     = libvirt_network.bootstrap.id
-    wait_for_lease = false 
+    mac            = "52:54:00:aa:45:e7"
+    wait_for_lease = false
   }
-
   network_interface {
-    network_id = libvirt_network.red.id
-    wait_for_lease = false 
+    network_id     = libvirt_network.red.id
+    mac            = "52:54:00:a6:18:4e"
+    wait_for_lease = false
   }
-
   network_interface {
-    network_id = libvirt_network.green.id
-    wait_for_lease = false 
+    network_id     = libvirt_network.green.id
+    mac            = "52:54:00:1e:fe:c5"
+    wait_for_lease = false
   }
-
   network_interface {
-    network_id = libvirt_network.dmz.id
-    wait_for_lease = false 
+    network_id     = libvirt_network.dmz.id
+    mac            = "52:54:00:2a:d6:44"
+    wait_for_lease = false
   }
   console {
     type        = "pty"
