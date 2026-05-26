@@ -64,6 +64,19 @@ resource "libvirt_network" "dmz" {
     enabled = false
   }
 }
+# ─────────────────────────────────────────
+# Réseau RED/WAN (10.0.0.0/24)
+# IPFire WAN
+# ─────────────────────────────────────────
+resource "libvirt_network" "red" {
+  name      = "lab-red"
+  mode      = "nat"
+  addresses = ["10.0.0.0/24"]
+
+  dhcp {
+    enabled = true
+  }
+}
 
 # ─────────────────────────────────────────
 # Téléchargement image Debian si absente
@@ -374,6 +387,93 @@ resource "libvirt_domain" "vm2" {
 
   cloudinit = libvirt_cloudinit_disk.vm2.id
 
+  console {
+    type        = "pty"
+    target_type = "serial"
+    target_port = "0"
+  }
+
+  graphics {
+    type     = "spice"
+    autoport = true
+  }
+}
+# ─────────────────────────────────────────
+# Téléchargement ISO IPFire si absent
+# ─────────────────────────────────────────
+resource "null_resource" "download_ipfire" {
+  triggers = {
+    iso_url = var.ipfire_iso_url
+  }
+
+  provisioner "local-exec" {
+    command = <<-EOF
+      if [ ! -f "${path.module}/${var.ipfire_iso_name}" ]; then
+        echo ">>> Téléchargement ISO IPFire..."
+        wget -q -O "${path.module}/${var.ipfire_iso_name}" "${var.ipfire_iso_url}"
+      else
+        echo ">>> ISO IPFire déjà présent, on continue."
+      fi
+    EOF
+  }
+}
+
+# ─────────────────────────────────────────
+# Volume ISO IPFire
+# ─────────────────────────────────────────
+resource "libvirt_volume" "ipfire_iso" {
+  depends_on = [null_resource.download_ipfire]
+  name       = var.ipfire_iso_name
+  pool       = var.pool
+  source     = "${path.module}/${var.ipfire_iso_name}"
+  format     = "raw"
+}
+# ─────────────────────────────────────────
+# Volume disque srvsec (IPFire)
+# ─────────────────────────────────────────
+resource "libvirt_volume" "srvsec" {
+  name   = "srvsec-os.qcow2"
+  pool   = var.pool
+  format = "qcow2"
+  size   = 21474836480
+}
+
+# ─────────────────────────────────────────
+# VM srvsec (IPFire)
+# ─────────────────────────────────────────
+resource "libvirt_domain" "srvsec" {
+  depends_on = [null_resource.download_ipfire]
+  name   = "srvsec"
+  memory = 2048
+  vcpu   = 2
+
+  disk {
+    volume_id = libvirt_volume.srvsec.id
+  }
+  disk {
+    volume_id = libvirt_volume.ipfire_iso.id
+    scsi      = false
+  }
+
+  network_interface {
+    network_id     = libvirt_network.bootstrap.id
+    wait_for_lease = false 
+  }
+
+  network_interface {
+    network_id = libvirt_network.red.id
+    wait_for_lease = false 
+  }
+
+  network_interface {
+    network_id = libvirt_network.green.id
+    wait_for_lease = false 
+  }
+
+  network_interface {
+    network_id = libvirt_network.dmz.id
+    wait_for_lease = false 
+  }
   console {
     type        = "pty"
     target_type = "serial"

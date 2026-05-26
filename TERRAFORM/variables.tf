@@ -19,3 +19,14 @@ variable "image_name" {
   description = "Nom du fichier image"
   default     = "debian-12-genericcloud-amd64.qcow2"
 }
+variable "ipfire_iso_url" {
+  type        = string
+  description = "URL de téléchargement de l ISO IPFire"
+  default     = "https://downloads.ipfire.org/releases/ipfire-2.x/2.29-core199/ipfire-2.29-core199-x86_64.iso"
+}
+
+variable "ipfire_iso_name" {
+  type        = string
+  description = "Nom du fichier ISO IPFire"
+  default     = "ipfire-2.29-core199-x86_64.iso"
+}
