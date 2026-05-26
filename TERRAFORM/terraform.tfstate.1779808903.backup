@@ -1,0 +1,1558 @@
+{
+  "version": 4,
+  "terraform_version": "1.15.3",
+  "serial": 598,
+  "lineage": "36b524eb-019a-56c4-9a7f-b2fab773f73a",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "data",
+      "type": "cloudinit_config",
+      "name": "ovs",
+      "provider": "provider[\"registry.terraform.io/hashicorp/cloudinit\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "base64_encode": false,
+            "boundary": "MIMEBOUNDARY",
+            "gzip": false,
+            "id": "3275848275",
+            "part": [
+              {
+                "content": "#cloud-config\nhostname: ovs\nfqdn: ovs.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n",
+                "content_type": "text/cloud-config",
+                "filename": null,
+                "merge_type": null
+              }
+            ],
+            "rendered": "Content-Type: multipart/mixed; boundary=\"MIMEBOUNDARY\"\nMIME-Version: 1.0\r\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/cloud-config\r\nMime-Version: 1.0\r\n\r\n#cloud-config\nhostname: ovs\nfqdn: ovs.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n\r\n--MIMEBOUNDARY--\r\n"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "cloudinit_config",
+      "name": "srvdmz",
+      "provider": "provider[\"registry.terraform.io/hashicorp/cloudinit\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "base64_encode": false,
+            "boundary": "MIMEBOUNDARY",
+            "gzip": false,
+            "id": "211046750",
+            "part": [
+              {
+                "content": "#cloud-config\nhostname: srvdmz\nfqdn: srvdmz.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n",
+                "content_type": "text/cloud-config",
+                "filename": null,
+                "merge_type": null
+              },
+              {
+                "content": "version: 2\nethernets:\n  default:\n    match:\n      name: \"e*\"\n    dhcp4: true\n",
+                "content_type": "text/network-config",
+                "filename": null,
+                "merge_type": null
+              }
+            ],
+            "rendered": "Content-Type: multipart/mixed; boundary=\"MIMEBOUNDARY\"\nMIME-Version: 1.0\r\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/cloud-config\r\nMime-Version: 1.0\r\n\r\n#cloud-config\nhostname: srvdmz\nfqdn: srvdmz.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/network-config\r\nMime-Version: 1.0\r\n\r\nversion: 2\nethernets:\n  default:\n    match:\n      name: \"e*\"\n    dhcp4: true\n\r\n--MIMEBOUNDARY--\r\n"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "cloudinit_config",
+      "name": "srvlan",
+      "provider": "provider[\"registry.terraform.io/hashicorp/cloudinit\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "base64_encode": false,
+            "boundary": "MIMEBOUNDARY",
+            "gzip": false,
+            "id": "1051315390",
+            "part": [
+              {
+                "content": "#cloud-config\nhostname: srvlan\nfqdn: srvlan.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n",
+                "content_type": "text/cloud-config",
+                "filename": null,
+                "merge_type": null
+              },
+              {
+                "content": "version: 2\nethernets:\n  default:\n    match:\n      name: \"e*\"\n    dhcp4: true\n",
+                "content_type": "text/network-config",
+                "filename": null,
+                "merge_type": null
+              }
+            ],
+            "rendered": "Content-Type: multipart/mixed; boundary=\"MIMEBOUNDARY\"\nMIME-Version: 1.0\r\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/cloud-config\r\nMime-Version: 1.0\r\n\r\n#cloud-config\nhostname: srvlan\nfqdn: srvlan.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/network-config\r\nMime-Version: 1.0\r\n\r\nversion: 2\nethernets:\n  default:\n    match:\n      name: \"e*\"\n    dhcp4: true\n\r\n--MIMEBOUNDARY--\r\n"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "cloudinit_config",
+      "name": "vm1",
+      "provider": "provider[\"registry.terraform.io/hashicorp/cloudinit\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "base64_encode": false,
+            "boundary": "MIMEBOUNDARY",
+            "gzip": false,
+            "id": "1032958352",
+            "part": [
+              {
+                "content": "#cloud-config\nhostname: vm1\nfqdn: vm1.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n",
+                "content_type": "text/cloud-config",
+                "filename": null,
+                "merge_type": null
+              },
+              {
+                "content": "version: 2\nethernets:\n  default:\n    match:\n      name: \"e*\"\n    dhcp4: true\n",
+                "content_type": "text/network-config",
+                "filename": null,
+                "merge_type": null
+              }
+            ],
+            "rendered": "Content-Type: multipart/mixed; boundary=\"MIMEBOUNDARY\"\nMIME-Version: 1.0\r\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/cloud-config\r\nMime-Version: 1.0\r\n\r\n#cloud-config\nhostname: vm1\nfqdn: vm1.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/network-config\r\nMime-Version: 1.0\r\n\r\nversion: 2\nethernets:\n  default:\n    match:\n      name: \"e*\"\n    dhcp4: true\n\r\n--MIMEBOUNDARY--\r\n"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "cloudinit_config",
+      "name": "vm2",
+      "provider": "provider[\"registry.terraform.io/hashicorp/cloudinit\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "base64_encode": false,
+            "boundary": "MIMEBOUNDARY",
+            "gzip": false,
+            "id": "2216068852",
+            "part": [
+              {
+                "content": "#cloud-config\nhostname: vm2\nfqdn: vm2.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n",
+                "content_type": "text/cloud-config",
+                "filename": null,
+                "merge_type": null
+              },
+              {
+                "content": "version: 2\nethernets:\n  default:\n    match:\n      name: \"e*\"\n    dhcp4: true\n",
+                "content_type": "text/network-config",
+                "filename": null,
+                "merge_type": null
+              }
+            ],
+            "rendered": "Content-Type: multipart/mixed; boundary=\"MIMEBOUNDARY\"\nMIME-Version: 1.0\r\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/cloud-config\r\nMime-Version: 1.0\r\n\r\n#cloud-config\nhostname: vm2\nfqdn: vm2.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/network-config\r\nMime-Version: 1.0\r\n\r\nversion: 2\nethernets:\n  default:\n    match:\n      name: \"e*\"\n    dhcp4: true\n\r\n--MIMEBOUNDARY--\r\n"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_cloudinit_disk",
+      "name": "ovs",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "/var/lib/libvirt/images/ovs-cloudinit.iso;51e99ad2-e920-4ff1-a1ae-9b5a84f463ec",
+            "meta_data": "",
+            "name": "ovs-cloudinit.iso",
+            "network_config": "",
+            "pool": "default",
+            "user_data": "Content-Type: multipart/mixed; boundary=\"MIMEBOUNDARY\"\nMIME-Version: 1.0\r\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/cloud-config\r\nMime-Version: 1.0\r\n\r\n#cloud-config\nhostname: ovs\nfqdn: ovs.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n\r\n--MIMEBOUNDARY--\r\n"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.cloudinit_config.ovs"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_cloudinit_disk",
+      "name": "srvdmz",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "/var/lib/libvirt/images/srvdmz-cloudinit.iso;14307971-c881-405f-ba2d-a8cb1734e8dd",
+            "meta_data": "",
+            "name": "srvdmz-cloudinit.iso",
+            "network_config": "",
+            "pool": "default",
+            "user_data": "Content-Type: multipart/mixed; boundary=\"MIMEBOUNDARY\"\nMIME-Version: 1.0\r\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/cloud-config\r\nMime-Version: 1.0\r\n\r\n#cloud-config\nhostname: srvdmz\nfqdn: srvdmz.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/network-config\r\nMime-Version: 1.0\r\n\r\nversion: 2\nethernets:\n  default:\n    match:\n      name: \"e*\"\n    dhcp4: true\n\r\n--MIMEBOUNDARY--\r\n"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.cloudinit_config.srvdmz"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_cloudinit_disk",
+      "name": "srvlan",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "/var/lib/libvirt/images/srvlan-cloudinit.iso;32534c0e-5118-42b8-97d0-9ac8845d8ddd",
+            "meta_data": "",
+            "name": "srvlan-cloudinit.iso",
+            "network_config": "",
+            "pool": "default",
+            "user_data": "Content-Type: multipart/mixed; boundary=\"MIMEBOUNDARY\"\nMIME-Version: 1.0\r\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/cloud-config\r\nMime-Version: 1.0\r\n\r\n#cloud-config\nhostname: srvlan\nfqdn: srvlan.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/network-config\r\nMime-Version: 1.0\r\n\r\nversion: 2\nethernets:\n  default:\n    match:\n      name: \"e*\"\n    dhcp4: true\n\r\n--MIMEBOUNDARY--\r\n"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.cloudinit_config.srvlan"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_cloudinit_disk",
+      "name": "vm1",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "/var/lib/libvirt/images/vm1-cloudinit.iso;8f22fbb8-8686-41fc-8c2d-1b775b9bd712",
+            "meta_data": "",
+            "name": "vm1-cloudinit.iso",
+            "network_config": "",
+            "pool": "default",
+            "user_data": "Content-Type: multipart/mixed; boundary=\"MIMEBOUNDARY\"\nMIME-Version: 1.0\r\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/cloud-config\r\nMime-Version: 1.0\r\n\r\n#cloud-config\nhostname: vm1\nfqdn: vm1.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/network-config\r\nMime-Version: 1.0\r\n\r\nversion: 2\nethernets:\n  default:\n    match:\n      name: \"e*\"\n    dhcp4: true\n\r\n--MIMEBOUNDARY--\r\n"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.cloudinit_config.vm1"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_cloudinit_disk",
+      "name": "vm2",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "/var/lib/libvirt/images/vm2-cloudinit.iso;6a2ad4eb-fab0-48bc-98a2-dfbd307a83ce",
+            "meta_data": "",
+            "name": "vm2-cloudinit.iso",
+            "network_config": "",
+            "pool": "default",
+            "user_data": "Content-Type: multipart/mixed; boundary=\"MIMEBOUNDARY\"\nMIME-Version: 1.0\r\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/cloud-config\r\nMime-Version: 1.0\r\n\r\n#cloud-config\nhostname: vm2\nfqdn: vm2.lab.local\nmanage_etc_hosts: true\n\nusers:\n  - name: debian\n    sudo: ALL=(ALL) NOPASSWD:ALL\n    shell: /bin/bash\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAwoDNQ0VO1rxVHWmGov7JDj1k+9la6EIu+DkwwSOxzk atelier@Debian\n\n\npackages:\n  - qemu-guest-agent\n\nruncmd:\n  - systemctl enable qemu-guest-agent\n  - systemctl start qemu-guest-agent\n\r\n--MIMEBOUNDARY\r\nContent-Transfer-Encoding: 7bit\r\nContent-Type: text/network-config\r\nMime-Version: 1.0\r\n\r\nversion: 2\nethernets:\n  default:\n    match:\n      name: \"e*\"\n    dhcp4: true\n\r\n--MIMEBOUNDARY--\r\n"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.cloudinit_config.vm2"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_domain",
+      "name": "ovs",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arch": "x86_64",
+            "autostart": false,
+            "boot_device": [],
+            "cloudinit": "/var/lib/libvirt/images/ovs-cloudinit.iso;51e99ad2-e920-4ff1-a1ae-9b5a84f463ec",
+            "cmdline": [],
+            "console": [
+              {
+                "source_host": "127.0.0.1",
+                "source_path": "",
+                "source_service": "0",
+                "target_port": "0",
+                "target_type": "serial",
+                "type": "pty"
+              }
+            ],
+            "coreos_ignition": null,
+            "cpu": [
+              {
+                "mode": "custom"
+              }
+            ],
+            "description": "",
+            "disk": [
+              {
+                "block_device": "",
+                "file": "",
+                "scsi": false,
+                "url": "",
+                "volume_id": "/var/lib/libvirt/images/ovs-os.qcow2",
+                "wwn": ""
+              }
+            ],
+            "emulator": "/usr/bin/qemu-system-x86_64",
+            "filesystem": [],
+            "firmware": null,
+            "fw_cfg_name": "opt/com.coreos/config",
+            "graphics": [
+              {
+                "autoport": true,
+                "listen_address": "127.0.0.1",
+                "listen_type": "none",
+                "type": "spice",
+                "websocket": 0
+              }
+            ],
+            "id": "e4d41c71-5b09-4c6f-9ef7-ca45a63b812b",
+            "initrd": "",
+            "kernel": "",
+            "machine": "pc",
+            "memory": 1024,
+            "metadata": null,
+            "name": "ovs",
+            "network_interface": [
+              {
+                "addresses": [
+                  "192.168.100.70"
+                ],
+                "bridge": "",
+                "hostname": "ovs",
+                "mac": "52:54:00:DA:2A:2B",
+                "macvtap": "",
+                "network_id": "320ef8ef-a8c8-43bd-8d97-f10f4008c52e",
+                "network_name": "bootstrap",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": true
+              },
+              {
+                "addresses": [],
+                "bridge": "",
+                "hostname": "",
+                "mac": "52:54:00:C6:3C:57",
+                "macvtap": "",
+                "network_id": "0ca0cc40-8c40-4f8f-835c-42695ca2dcba",
+                "network_name": "lab-lan",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": false
+              },
+              {
+                "addresses": [],
+                "bridge": "",
+                "hostname": "",
+                "mac": "52:54:00:72:63:82",
+                "macvtap": "",
+                "network_id": "c621e6b0-dee3-4b0b-83f2-123f3db9b471",
+                "network_name": "ovs-vm1",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": false
+              },
+              {
+                "addresses": [],
+                "bridge": "",
+                "hostname": "",
+                "mac": "52:54:00:D6:59:51",
+                "macvtap": "",
+                "network_id": "5d12a8ec-f9e3-43fd-a6d7-1ea085585fd9",
+                "network_name": "ovs-vm2",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": false
+              }
+            ],
+            "nvram": [],
+            "qemu_agent": false,
+            "running": true,
+            "timeouts": null,
+            "tpm": [],
+            "type": "kvm",
+            "vcpu": 2,
+            "video": [],
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDB9fQ==",
+          "dependencies": [
+            "data.cloudinit_config.ovs",
+            "libvirt_cloudinit_disk.ovs",
+            "libvirt_network.bootstrap",
+            "libvirt_network.lan",
+            "libvirt_network.ovs_vm1",
+            "libvirt_network.ovs_vm2",
+            "libvirt_volume.ovs",
+            "null_resource.download_image"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_domain",
+      "name": "srvdmz",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arch": "x86_64",
+            "autostart": false,
+            "boot_device": [],
+            "cloudinit": "/var/lib/libvirt/images/srvdmz-cloudinit.iso;14307971-c881-405f-ba2d-a8cb1734e8dd",
+            "cmdline": [],
+            "console": [
+              {
+                "source_host": "127.0.0.1",
+                "source_path": "",
+                "source_service": "0",
+                "target_port": "0",
+                "target_type": "serial",
+                "type": "pty"
+              }
+            ],
+            "coreos_ignition": null,
+            "cpu": [
+              {
+                "mode": "custom"
+              }
+            ],
+            "description": "",
+            "disk": [
+              {
+                "block_device": "",
+                "file": "",
+                "scsi": false,
+                "url": "",
+                "volume_id": "/var/lib/libvirt/images/srvdmz-os.qcow2",
+                "wwn": ""
+              }
+            ],
+            "emulator": "/usr/bin/qemu-system-x86_64",
+            "filesystem": [],
+            "firmware": null,
+            "fw_cfg_name": "opt/com.coreos/config",
+            "graphics": [
+              {
+                "autoport": true,
+                "listen_address": "127.0.0.1",
+                "listen_type": "none",
+                "type": "spice",
+                "websocket": 0
+              }
+            ],
+            "id": "753a8676-ed82-4042-ad74-f4b3460c5b27",
+            "initrd": "",
+            "kernel": "",
+            "machine": "pc",
+            "memory": 1024,
+            "metadata": null,
+            "name": "srvdmz",
+            "network_interface": [
+              {
+                "addresses": [
+                  "192.168.100.201"
+                ],
+                "bridge": "",
+                "hostname": "srvdmz",
+                "mac": "52:54:00:BA:86:EF",
+                "macvtap": "",
+                "network_id": "320ef8ef-a8c8-43bd-8d97-f10f4008c52e",
+                "network_name": "bootstrap",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": true
+              },
+              {
+                "addresses": [],
+                "bridge": "",
+                "hostname": "",
+                "mac": "52:54:00:7E:1C:91",
+                "macvtap": "",
+                "network_id": "730f049f-c5a8-43b9-835f-7be685cccc1f",
+                "network_name": "lab-dmz",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": false
+              }
+            ],
+            "nvram": [],
+            "qemu_agent": false,
+            "running": true,
+            "timeouts": null,
+            "tpm": [],
+            "type": "kvm",
+            "vcpu": 1,
+            "video": [],
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDB9fQ==",
+          "dependencies": [
+            "data.cloudinit_config.srvdmz",
+            "libvirt_cloudinit_disk.srvdmz",
+            "libvirt_network.bootstrap",
+            "libvirt_network.dmz",
+            "libvirt_volume.srvdmz",
+            "null_resource.download_image"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_domain",
+      "name": "srvlan",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arch": "x86_64",
+            "autostart": false,
+            "boot_device": [],
+            "cloudinit": "/var/lib/libvirt/images/srvlan-cloudinit.iso;32534c0e-5118-42b8-97d0-9ac8845d8ddd",
+            "cmdline": [],
+            "console": [
+              {
+                "source_host": "127.0.0.1",
+                "source_path": "",
+                "source_service": "0",
+                "target_port": "0",
+                "target_type": "serial",
+                "type": "pty"
+              }
+            ],
+            "coreos_ignition": null,
+            "cpu": [
+              {
+                "mode": "custom"
+              }
+            ],
+            "description": "",
+            "disk": [
+              {
+                "block_device": "",
+                "file": "",
+                "scsi": false,
+                "url": "",
+                "volume_id": "/var/lib/libvirt/images/srvlan-os.qcow2",
+                "wwn": ""
+              }
+            ],
+            "emulator": "/usr/bin/qemu-system-x86_64",
+            "filesystem": [],
+            "firmware": null,
+            "fw_cfg_name": "opt/com.coreos/config",
+            "graphics": [
+              {
+                "autoport": true,
+                "listen_address": "127.0.0.1",
+                "listen_type": "none",
+                "type": "spice",
+                "websocket": 0
+              }
+            ],
+            "id": "bd112a62-8ddd-4656-9a6d-c6bce1f4cb1e",
+            "initrd": "",
+            "kernel": "",
+            "machine": "pc",
+            "memory": 1024,
+            "metadata": null,
+            "name": "srvlan",
+            "network_interface": [
+              {
+                "addresses": [
+                  "192.168.100.17"
+                ],
+                "bridge": "",
+                "hostname": "srvlan",
+                "mac": "52:54:00:F2:A9:BB",
+                "macvtap": "",
+                "network_id": "320ef8ef-a8c8-43bd-8d97-f10f4008c52e",
+                "network_name": "bootstrap",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": true
+              },
+              {
+                "addresses": [],
+                "bridge": "",
+                "hostname": "",
+                "mac": "52:54:00:02:E2:D8",
+                "macvtap": "",
+                "network_id": "0ca0cc40-8c40-4f8f-835c-42695ca2dcba",
+                "network_name": "lab-lan",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": false
+              },
+              {
+                "addresses": [],
+                "bridge": "",
+                "hostname": "",
+                "mac": "52:54:00:4E:50:0F",
+                "macvtap": "",
+                "network_id": "3d3301d6-3be5-4f61-9fa6-6254e17a6492",
+                "network_name": "lab-green",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": false
+              }
+            ],
+            "nvram": [],
+            "qemu_agent": false,
+            "running": true,
+            "timeouts": null,
+            "tpm": [],
+            "type": "kvm",
+            "vcpu": 1,
+            "video": [],
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDB9fQ==",
+          "dependencies": [
+            "data.cloudinit_config.srvlan",
+            "libvirt_cloudinit_disk.srvlan",
+            "libvirt_network.bootstrap",
+            "libvirt_network.green",
+            "libvirt_network.lan",
+            "libvirt_volume.srvlan",
+            "null_resource.download_image"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_domain",
+      "name": "srvsec",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "status": "tainted",
+          "schema_version": 0,
+          "attributes": {
+            "arch": "x86_64",
+            "autostart": false,
+            "boot_device": [],
+            "cloudinit": null,
+            "cmdline": [],
+            "console": [
+              {
+                "source_host": "127.0.0.1",
+                "source_path": "",
+                "source_service": "0",
+                "target_port": "0",
+                "target_type": "serial",
+                "type": "pty"
+              }
+            ],
+            "coreos_ignition": null,
+            "cpu": [
+              {
+                "mode": "custom"
+              }
+            ],
+            "description": "",
+            "disk": [
+              {
+                "block_device": "",
+                "file": "",
+                "scsi": false,
+                "url": "",
+                "volume_id": "/var/lib/libvirt/images/srvsec-os.qcow2",
+                "wwn": ""
+              }
+            ],
+            "emulator": "/usr/bin/qemu-system-x86_64",
+            "filesystem": [],
+            "firmware": null,
+            "fw_cfg_name": "opt/com.coreos/config",
+            "graphics": [
+              {
+                "autoport": true,
+                "listen_address": "127.0.0.1",
+                "listen_type": "none",
+                "type": "spice",
+                "websocket": 0
+              }
+            ],
+            "id": "c42b461a-e6e6-401c-a704-aadaff0015bc",
+            "initrd": "",
+            "kernel": "",
+            "machine": "pc",
+            "memory": 2048,
+            "metadata": null,
+            "name": "srvsec",
+            "network_interface": [
+              {
+                "addresses": [],
+                "bridge": "",
+                "hostname": "",
+                "mac": "52:54:00:AA:45:E7",
+                "macvtap": "",
+                "network_id": "320ef8ef-a8c8-43bd-8d97-f10f4008c52e",
+                "network_name": "bootstrap",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": false
+              },
+              {
+                "addresses": [],
+                "bridge": "",
+                "hostname": "",
+                "mac": "52:54:00:A6:18:4E",
+                "macvtap": "",
+                "network_id": "5d8383ea-f47c-402a-bea5-7810135863a0",
+                "network_name": "lab-red",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": false
+              },
+              {
+                "addresses": [],
+                "bridge": "",
+                "hostname": "",
+                "mac": "52:54:00:1E:FE:C5",
+                "macvtap": "",
+                "network_id": "3d3301d6-3be5-4f61-9fa6-6254e17a6492",
+                "network_name": "lab-green",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": false
+              },
+              {
+                "addresses": [],
+                "bridge": "",
+                "hostname": "",
+                "mac": "52:54:00:2A:D6:44",
+                "macvtap": "",
+                "network_id": "730f049f-c5a8-43b9-835f-7be685cccc1f",
+                "network_name": "lab-dmz",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": false
+              }
+            ],
+            "nvram": [],
+            "qemu_agent": false,
+            "running": true,
+            "timeouts": null,
+            "tpm": [],
+            "type": "kvm",
+            "vcpu": 2,
+            "video": [],
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDB9fQ==",
+          "dependencies": [
+            "libvirt_network.bootstrap",
+            "libvirt_network.dmz",
+            "libvirt_network.green",
+            "libvirt_network.red",
+            "null_resource.prepare_srvsec"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_domain",
+      "name": "vm1",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arch": "x86_64",
+            "autostart": false,
+            "boot_device": [],
+            "cloudinit": "/var/lib/libvirt/images/vm1-cloudinit.iso;8f22fbb8-8686-41fc-8c2d-1b775b9bd712",
+            "cmdline": [],
+            "console": [
+              {
+                "source_host": "127.0.0.1",
+                "source_path": "",
+                "source_service": "0",
+                "target_port": "0",
+                "target_type": "serial",
+                "type": "pty"
+              }
+            ],
+            "coreos_ignition": null,
+            "cpu": [
+              {
+                "mode": "custom"
+              }
+            ],
+            "description": "",
+            "disk": [
+              {
+                "block_device": "",
+                "file": "",
+                "scsi": false,
+                "url": "",
+                "volume_id": "/var/lib/libvirt/images/vm1-os.qcow2",
+                "wwn": ""
+              }
+            ],
+            "emulator": "/usr/bin/qemu-system-x86_64",
+            "filesystem": [],
+            "firmware": null,
+            "fw_cfg_name": "opt/com.coreos/config",
+            "graphics": [
+              {
+                "autoport": true,
+                "listen_address": "127.0.0.1",
+                "listen_type": "none",
+                "type": "spice",
+                "websocket": 0
+              }
+            ],
+            "id": "45da1e57-9f8c-4395-b4d5-2782db7468da",
+            "initrd": "",
+            "kernel": "",
+            "machine": "pc",
+            "memory": 1024,
+            "metadata": null,
+            "name": "vm1",
+            "network_interface": [
+              {
+                "addresses": [
+                  "192.168.100.15"
+                ],
+                "bridge": "",
+                "hostname": "vm1",
+                "mac": "52:54:00:B6:86:E1",
+                "macvtap": "",
+                "network_id": "320ef8ef-a8c8-43bd-8d97-f10f4008c52e",
+                "network_name": "bootstrap",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": true
+              },
+              {
+                "addresses": [],
+                "bridge": "",
+                "hostname": "",
+                "mac": "52:54:00:9A:0B:26",
+                "macvtap": "",
+                "network_id": "c621e6b0-dee3-4b0b-83f2-123f3db9b471",
+                "network_name": "ovs-vm1",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": false
+              }
+            ],
+            "nvram": [],
+            "qemu_agent": false,
+            "running": true,
+            "timeouts": null,
+            "tpm": [],
+            "type": "kvm",
+            "vcpu": 1,
+            "video": [],
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDB9fQ==",
+          "dependencies": [
+            "data.cloudinit_config.vm1",
+            "libvirt_cloudinit_disk.vm1",
+            "libvirt_network.bootstrap",
+            "libvirt_network.ovs_vm1",
+            "libvirt_volume.vm1",
+            "null_resource.download_image"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_domain",
+      "name": "vm2",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arch": "x86_64",
+            "autostart": false,
+            "boot_device": [],
+            "cloudinit": "/var/lib/libvirt/images/vm2-cloudinit.iso;6a2ad4eb-fab0-48bc-98a2-dfbd307a83ce",
+            "cmdline": [],
+            "console": [
+              {
+                "source_host": "127.0.0.1",
+                "source_path": "",
+                "source_service": "0",
+                "target_port": "0",
+                "target_type": "serial",
+                "type": "pty"
+              }
+            ],
+            "coreos_ignition": null,
+            "cpu": [
+              {
+                "mode": "custom"
+              }
+            ],
+            "description": "",
+            "disk": [
+              {
+                "block_device": "",
+                "file": "",
+                "scsi": false,
+                "url": "",
+                "volume_id": "/var/lib/libvirt/images/vm2-os.qcow2",
+                "wwn": ""
+              }
+            ],
+            "emulator": "/usr/bin/qemu-system-x86_64",
+            "filesystem": [],
+            "firmware": null,
+            "fw_cfg_name": "opt/com.coreos/config",
+            "graphics": [
+              {
+                "autoport": true,
+                "listen_address": "127.0.0.1",
+                "listen_type": "none",
+                "type": "spice",
+                "websocket": 0
+              }
+            ],
+            "id": "3f8f87e4-84e1-4030-b502-368c6049345b",
+            "initrd": "",
+            "kernel": "",
+            "machine": "pc",
+            "memory": 1024,
+            "metadata": null,
+            "name": "vm2",
+            "network_interface": [
+              {
+                "addresses": [
+                  "192.168.100.181"
+                ],
+                "bridge": "",
+                "hostname": "vm2",
+                "mac": "52:54:00:32:F9:40",
+                "macvtap": "",
+                "network_id": "320ef8ef-a8c8-43bd-8d97-f10f4008c52e",
+                "network_name": "bootstrap",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": true
+              },
+              {
+                "addresses": [],
+                "bridge": "",
+                "hostname": "",
+                "mac": "52:54:00:F6:98:5A",
+                "macvtap": "",
+                "network_id": "5d12a8ec-f9e3-43fd-a6d7-1ea085585fd9",
+                "network_name": "ovs-vm2",
+                "passthrough": "",
+                "vepa": "",
+                "wait_for_lease": false
+              }
+            ],
+            "nvram": [],
+            "qemu_agent": false,
+            "running": true,
+            "timeouts": null,
+            "tpm": [],
+            "type": "kvm",
+            "vcpu": 1,
+            "video": [],
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDB9fQ==",
+          "dependencies": [
+            "data.cloudinit_config.vm2",
+            "libvirt_cloudinit_disk.vm2",
+            "libvirt_network.bootstrap",
+            "libvirt_network.ovs_vm2",
+            "libvirt_volume.vm2",
+            "null_resource.download_image"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_network",
+      "name": "bootstrap",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "addresses": [
+              "192.168.100.0/24"
+            ],
+            "autostart": false,
+            "bridge": "virbr5",
+            "dhcp": [
+              {
+                "enabled": true
+              }
+            ],
+            "dns": [
+              {
+                "enabled": true,
+                "forwarders": [],
+                "hosts": [],
+                "local_only": false,
+                "srvs": []
+              }
+            ],
+            "dnsmasq_options": [],
+            "domain": null,
+            "id": "320ef8ef-a8c8-43bd-8d97-f10f4008c52e",
+            "mode": "nat",
+            "mtu": null,
+            "name": "bootstrap",
+            "routes": [],
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_network",
+      "name": "dmz",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "addresses": [
+              "192.168.4.0/24"
+            ],
+            "autostart": false,
+            "bridge": "virbr6",
+            "dhcp": [
+              {
+                "enabled": false
+              }
+            ],
+            "dns": [
+              {
+                "enabled": false,
+                "forwarders": [],
+                "hosts": [],
+                "local_only": false,
+                "srvs": []
+              }
+            ],
+            "dnsmasq_options": [],
+            "domain": null,
+            "id": "730f049f-c5a8-43b9-835f-7be685cccc1f",
+            "mode": "none",
+            "mtu": null,
+            "name": "lab-dmz",
+            "routes": [],
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_network",
+      "name": "green",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "addresses": [
+              "192.168.2.0/24"
+            ],
+            "autostart": false,
+            "bridge": "virbr3",
+            "dhcp": [
+              {
+                "enabled": false
+              }
+            ],
+            "dns": [
+              {
+                "enabled": false,
+                "forwarders": [],
+                "hosts": [],
+                "local_only": false,
+                "srvs": []
+              }
+            ],
+            "dnsmasq_options": [],
+            "domain": null,
+            "id": "3d3301d6-3be5-4f61-9fa6-6254e17a6492",
+            "mode": "none",
+            "mtu": null,
+            "name": "lab-green",
+            "routes": [],
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_network",
+      "name": "lan",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "addresses": [
+              "192.168.3.0/24"
+            ],
+            "autostart": false,
+            "bridge": "virbr4",
+            "dhcp": [
+              {
+                "enabled": false
+              }
+            ],
+            "dns": [
+              {
+                "enabled": false,
+                "forwarders": [],
+                "hosts": [],
+                "local_only": false,
+                "srvs": []
+              }
+            ],
+            "dnsmasq_options": [],
+            "domain": null,
+            "id": "0ca0cc40-8c40-4f8f-835c-42695ca2dcba",
+            "mode": "none",
+            "mtu": null,
+            "name": "lab-lan",
+            "routes": [],
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_network",
+      "name": "ovs_vm1",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "addresses": null,
+            "autostart": false,
+            "bridge": "virbr7",
+            "dhcp": [],
+            "dns": [
+              {
+                "enabled": false,
+                "forwarders": [],
+                "hosts": [],
+                "local_only": false,
+                "srvs": []
+              }
+            ],
+            "dnsmasq_options": [],
+            "domain": null,
+            "id": "c621e6b0-dee3-4b0b-83f2-123f3db9b471",
+            "mode": "none",
+            "mtu": null,
+            "name": "ovs-vm1",
+            "routes": [],
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_network",
+      "name": "ovs_vm2",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "addresses": null,
+            "autostart": false,
+            "bridge": "virbr1",
+            "dhcp": [],
+            "dns": [
+              {
+                "enabled": false,
+                "forwarders": [],
+                "hosts": [],
+                "local_only": false,
+                "srvs": []
+              }
+            ],
+            "dnsmasq_options": [],
+            "domain": null,
+            "id": "5d12a8ec-f9e3-43fd-a6d7-1ea085585fd9",
+            "mode": "none",
+            "mtu": null,
+            "name": "ovs-vm2",
+            "routes": [],
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_network",
+      "name": "red",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "addresses": [
+              "10.0.0.0/24"
+            ],
+            "autostart": false,
+            "bridge": "virbr2",
+            "dhcp": [
+              {
+                "enabled": true
+              }
+            ],
+            "dns": [
+              {
+                "enabled": false,
+                "forwarders": [],
+                "hosts": [],
+                "local_only": false,
+                "srvs": []
+              }
+            ],
+            "dnsmasq_options": [],
+            "domain": null,
+            "id": "5d8383ea-f47c-402a-bea5-7810135863a0",
+            "mode": "nat",
+            "mtu": null,
+            "name": "lab-red",
+            "routes": [],
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_volume",
+      "name": "ovs",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "base_volume_id": null,
+            "base_volume_name": null,
+            "base_volume_pool": null,
+            "format": "qcow2",
+            "id": "/var/lib/libvirt/images/ovs-os.qcow2",
+            "name": "ovs-os.qcow2",
+            "pool": "default",
+            "size": 3221225472,
+            "source": "./debian-12-genericcloud-amd64.qcow2",
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "null_resource.download_image"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_volume",
+      "name": "srvdmz",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "base_volume_id": null,
+            "base_volume_name": null,
+            "base_volume_pool": null,
+            "format": "qcow2",
+            "id": "/var/lib/libvirt/images/srvdmz-os.qcow2",
+            "name": "srvdmz-os.qcow2",
+            "pool": "default",
+            "size": 3221225472,
+            "source": "./debian-12-genericcloud-amd64.qcow2",
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "null_resource.download_image"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_volume",
+      "name": "srvlan",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "base_volume_id": null,
+            "base_volume_name": null,
+            "base_volume_pool": null,
+            "format": "qcow2",
+            "id": "/var/lib/libvirt/images/srvlan-os.qcow2",
+            "name": "srvlan-os.qcow2",
+            "pool": "default",
+            "size": 3221225472,
+            "source": "./debian-12-genericcloud-amd64.qcow2",
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "null_resource.download_image"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_volume",
+      "name": "vm1",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "base_volume_id": null,
+            "base_volume_name": null,
+            "base_volume_pool": null,
+            "format": "qcow2",
+            "id": "/var/lib/libvirt/images/vm1-os.qcow2",
+            "name": "vm1-os.qcow2",
+            "pool": "default",
+            "size": 3221225472,
+            "source": "./debian-12-genericcloud-amd64.qcow2",
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "null_resource.download_image"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "libvirt_volume",
+      "name": "vm2",
+      "provider": "provider[\"registry.terraform.io/dmacvicar/libvirt\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "base_volume_id": null,
+            "base_volume_name": null,
+            "base_volume_pool": null,
+            "format": "qcow2",
+            "id": "/var/lib/libvirt/images/vm2-os.qcow2",
+            "name": "vm2-os.qcow2",
+            "pool": "default",
+            "size": 3221225472,
+            "source": "./debian-12-genericcloud-amd64.qcow2",
+            "xml": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "null_resource.download_image"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "null_resource",
+      "name": "download_image",
+      "provider": "provider[\"registry.terraform.io/hashicorp/null\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "7379234416852714512",
+            "triggers": {
+              "image_url": "https://cloud.debian.org/images/cloud/bookworm/latest/debian-12-genericcloud-amd64.qcow2"
+            }
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "null_resource",
+      "name": "gen_inventory",
+      "provider": "provider[\"registry.terraform.io/hashicorp/null\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "5501723493592604669",
+            "triggers": {
+              "always_run": "2026-05-26T15:21:05Z"
+            }
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "dependencies": [
+            "data.cloudinit_config.ovs",
+            "data.cloudinit_config.srvdmz",
+            "data.cloudinit_config.srvlan",
+            "data.cloudinit_config.vm1",
+            "data.cloudinit_config.vm2",
+            "libvirt_cloudinit_disk.ovs",
+            "libvirt_cloudinit_disk.srvdmz",
+            "libvirt_cloudinit_disk.srvlan",
+            "libvirt_cloudinit_disk.vm1",
+            "libvirt_cloudinit_disk.vm2",
+            "libvirt_domain.ovs",
+            "libvirt_domain.srvdmz",
+            "libvirt_domain.srvlan",
+            "libvirt_domain.vm1",
+            "libvirt_domain.vm2",
+            "libvirt_network.bootstrap",
+            "libvirt_network.dmz",
+            "libvirt_network.green",
+            "libvirt_network.lan",
+            "libvirt_network.ovs_vm1",
+            "libvirt_network.ovs_vm2",
+            "libvirt_volume.ovs",
+            "libvirt_volume.srvdmz",
+            "libvirt_volume.srvlan",
+            "libvirt_volume.vm1",
+            "libvirt_volume.vm2",
+            "null_resource.download_image"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "null_resource",
+      "name": "prepare_srvsec",
+      "provider": "provider[\"registry.terraform.io/hashicorp/null\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "1816845031602819091",
+            "triggers": {
+              "golden": "72758a639978457d5d699e2a09fb4679"
+            }
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}

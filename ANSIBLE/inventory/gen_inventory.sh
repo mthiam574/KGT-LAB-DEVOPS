@@ -14,7 +14,7 @@ SRVLAN=$(get_ip srvlan)
 SRVDMZ=$(get_ip srvdmz)
 VM1=$(get_ip vm1)
 VM2=$(get_ip vm2)
-
+OVS=$(get_ip ovs)
 cat > "$(dirname "$0")/hosts.yml" << EOF
 all:
   vars:
@@ -32,7 +32,8 @@ all:
         vm2:
           ansible_host: ${VM2}
           vm_lan_ip: 192.168.3.4
-
+        ovs:
+          ansible_host: ${OVS}
     dmz:
       hosts:
         srvdmz:
