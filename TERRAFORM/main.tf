@@ -25,16 +25,11 @@ resource "libvirt_network" "bootstrap" {
 
 # ─────────────────────────────────────────
 # Réseau LAN interne (192.168.3.0/24)
-# srvlan ↔ vm1/vm2
+# srvlan ↔ ovs ↔ vm1/vm2
 # ─────────────────────────────────────────
 resource "libvirt_network" "lan" {
-  name      = "lab-lan"
-  mode      = "none"
-  addresses = ["192.168.3.0/24"]
-
-  dhcp {
-    enabled = false
-  }
+  name = "lab-lan"
+  mode = "none"
 }
 
 # ─────────────────────────────────────────
@@ -42,13 +37,8 @@ resource "libvirt_network" "lan" {
 # IPFire ↔ srvlan
 # ─────────────────────────────────────────
 resource "libvirt_network" "green" {
-  name      = "lab-green"
-  mode      = "none"
-  addresses = ["192.168.2.0/24"]
-
-  dhcp {
-    enabled = false
-  }
+  name = "lab-green"
+  mode = "none"
 }
 
 # ─────────────────────────────────────────
@@ -56,14 +46,10 @@ resource "libvirt_network" "green" {
 # IPFire ↔ srvdmz
 # ─────────────────────────────────────────
 resource "libvirt_network" "dmz" {
-  name      = "lab-dmz"
-  mode      = "none"
-  addresses = ["192.168.4.0/24"]
-
-  dhcp {
-    enabled = false
-  }
+  name = "lab-dmz"
+  mode = "none"
 }
+
 # ─────────────────────────────────────────
 # Réseau isolé ovs ↔ vm1
 # ─────────────────────────────────────────
@@ -71,6 +57,7 @@ resource "libvirt_network" "ovs_vm1" {
   name = "ovs-vm1"
   mode = "none"
 }
+
 # ─────────────────────────────────────────
 # Réseau isolé ovs ↔ vm2
 # ─────────────────────────────────────────
@@ -78,6 +65,7 @@ resource "libvirt_network" "ovs_vm2" {
   name = "ovs-vm2"
   mode = "none"
 }
+
 # ─────────────────────────────────────────
 # Réseau RED/WAN (10.0.0.0/24)
 # IPFire WAN
@@ -169,13 +157,14 @@ resource "libvirt_domain" "srvlan" {
   }
 
   network_interface {
-    network_id = libvirt_network.lan.id
+    network_id     = libvirt_network.lan.id
+    wait_for_lease = false
   }
 
   network_interface {
-    network_id = libvirt_network.green.id
+    network_id     = libvirt_network.green.id
+    wait_for_lease = false
   }
-
 
   cloudinit = libvirt_cloudinit_disk.srvlan.id
 
@@ -248,7 +237,8 @@ resource "libvirt_domain" "srvdmz" {
   }
 
   network_interface {
-    network_id = libvirt_network.dmz.id
+    network_id     = libvirt_network.dmz.id
+    wait_for_lease = false
   }
 
   cloudinit = libvirt_cloudinit_disk.srvdmz.id
@@ -322,7 +312,8 @@ resource "libvirt_domain" "vm1" {
   }
 
   network_interface {
-    network_id = libvirt_network.ovs_vm1.id
+    network_id     = libvirt_network.ovs_vm1.id
+    wait_for_lease = false
   }
 
   cloudinit = libvirt_cloudinit_disk.vm1.id
@@ -396,7 +387,8 @@ resource "libvirt_domain" "vm2" {
   }
 
   network_interface {
-    network_id = libvirt_network.ovs_vm2.id
+    network_id     = libvirt_network.ovs_vm2.id
+    wait_for_lease = false
   }
 
   cloudinit = libvirt_cloudinit_disk.vm2.id
@@ -412,6 +404,7 @@ resource "libvirt_domain" "vm2" {
     autoport = true
   }
 }
+
 # ─────────────────────────────────────────
 # Volume disque ovs
 # ─────────────────────────────────────────
@@ -422,12 +415,14 @@ resource "libvirt_volume" "ovs" {
   source     = local.image_path
   format     = "qcow2"
 }
+
 # ─────────────────────────────────────────
 # Cloud-init ovs
 # ─────────────────────────────────────────
 data "cloudinit_config" "ovs" {
   gzip          = false
   base64_encode = false
+
   part {
     content_type = "text/cloud-config"
     content = templatefile("${path.module}/cloud_init.cfg", {
@@ -437,11 +432,13 @@ data "cloudinit_config" "ovs" {
     })
   }
 }
+
 resource "libvirt_cloudinit_disk" "ovs" {
   name      = "ovs-cloudinit.iso"
   pool      = var.pool
   user_data = data.cloudinit_config.ovs.rendered
 }
+
 # ─────────────────────────────────────────
 # VM ovs (Open vSwitch)
 # ─────────────────────────────────────────
@@ -449,66 +446,51 @@ resource "libvirt_domain" "ovs" {
   name   = "ovs"
   memory = 1024
   vcpu   = 2
+
   disk {
     volume_id = libvirt_volume.ovs.id
   }
+
   network_interface {
     network_id     = libvirt_network.bootstrap.id
     wait_for_lease = true
   }
+
   network_interface {
     network_id     = libvirt_network.lan.id
     wait_for_lease = false
   }
+
   network_interface {
     network_id     = libvirt_network.ovs_vm1.id
     wait_for_lease = false
   }
+
   network_interface {
     network_id     = libvirt_network.ovs_vm2.id
     wait_for_lease = false
   }
+
   cloudinit = libvirt_cloudinit_disk.ovs.id
+
   console {
     type        = "pty"
     target_type = "serial"
     target_port = "0"
   }
+
   graphics {
     type     = "spice"
     autoport = true
   }
 }
+
 # ─────────────────────────────────────────
-# Téléchargement ISO IPFire si absent
+# Téléchargement ISO IPFire (commenté)
 # ─────────────────────────────────────────
-#resource "null_resource" "download_ipfire" {
-#  triggers = {
-#    iso_url = var.ipfire_iso_url
-#  }
-#
-#  provisioner "local-exec" {
-#    command = <<-EOF
-#      if [ ! -f "${path.module}/${var.ipfire_iso_name}" ]; then
-#        echo ">>> Téléchargement ISO IPFire..."
-#        wget -q -O "${path.module}/${var.ipfire_iso_name}" "${var.ipfire_iso_url}"
-#      else
-#        echo ">>> ISO IPFire déjà présent, on continue."
-#      fi
-#    EOF
-#  }
-#}
-#
-## ─────────────────────────────────────────
-## Volume ISO IPFire
-## ─────────────────────────────────────────
-#resource "libvirt_volume" "ipfire_iso" {
-#  depends_on = [null_resource.download_ipfire]
-#  name       = var.ipfire_iso_name
-#  pool       = var.pool
-#  source     = "${path.module}/${var.ipfire_iso_name}"
-#  format     = "raw"
-#}
+#resource "null_resource" "download_ipfire" { ... }
+#resource "libvirt_volume" "ipfire_iso" { ... }
+
 # ─────────────────────────────────────────
 # Préparation disque srvsec (golden image)
 # ─────────────────────────────────────────
@@ -516,6 +498,7 @@ resource "null_resource" "prepare_srvsec" {
   triggers = {
     golden = filemd5("${path.module}/ipfire-golden.qcow2")
   }
+
   provisioner "local-exec" {
     command = <<-EOF
       sudo qemu-img convert -f qcow2 -O qcow2 \
@@ -523,18 +506,19 @@ resource "null_resource" "prepare_srvsec" {
         /var/lib/libvirt/images/srvsec-os.qcow2
       sudo chown libvirt-qemu:libvirt-qemu \
         /var/lib/libvirt/images/srvsec-os.qcow2
-        virsh -c qemu:///system pool-refresh default
+      virsh -c qemu:///system pool-refresh default
     EOF
   }
 }
+
 # ─────────────────────────────────────────
 # VM srvsec (IPFire)
 # ─────────────────────────────────────────
 resource "libvirt_domain" "srvsec" {
   depends_on = [null_resource.prepare_srvsec]
-  name   = "srvsec"
-  memory = 2048
-  vcpu   = 2
+  name       = "srvsec"
+  memory     = 2048
+  vcpu       = 2
 
   disk {
     file = "/var/lib/libvirt/images/srvsec-os.qcow2"
@@ -545,21 +529,25 @@ resource "libvirt_domain" "srvsec" {
     mac            = "52:54:00:aa:45:e7"
     wait_for_lease = false
   }
+
   network_interface {
     network_id     = libvirt_network.red.id
     mac            = "52:54:00:a6:18:4e"
     wait_for_lease = false
   }
+
   network_interface {
     network_id     = libvirt_network.green.id
     mac            = "52:54:00:1e:fe:c5"
     wait_for_lease = false
   }
+
   network_interface {
     network_id     = libvirt_network.dmz.id
     mac            = "52:54:00:2a:d6:44"
     wait_for_lease = false
   }
+
   console {
     type        = "pty"
     target_type = "serial"
