@@ -21,6 +21,9 @@
     ip4: "{{ srvlan_green_ip }}/{{ srvlan_green_mask }}"
     state: present
     autoconnect: true
+    routes4:
+      - ip: "192.168.4.0/24"
+        next_hop: "{{ srvlan_gateway }}"
 
 - name: Activation du routage ip_forward
   ansible.posix.sysctl:

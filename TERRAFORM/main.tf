@@ -494,34 +494,25 @@ resource "libvirt_domain" "ovs" {
 # ─────────────────────────────────────────
 # Préparation disque srvsec (golden image)
 # ─────────────────────────────────────────
-resource "null_resource" "prepare_srvsec" {
-  triggers = {
-    golden = filemd5("${path.module}/ipfire-golden.qcow2")
-  }
-
-  provisioner "local-exec" {
-    command = <<-EOF
-      sudo qemu-img convert -f qcow2 -O qcow2 \
-        ${path.module}/ipfire-golden.qcow2 \
-        /var/lib/libvirt/images/srvsec-os.qcow2
-      sudo chown libvirt-qemu:libvirt-qemu \
-        /var/lib/libvirt/images/srvsec-os.qcow2
-      virsh -c qemu:///system pool-refresh default
-    EOF
-  }
+resource "libvirt_volume" "srvsec" {
+  name   = "srvsec-os.qcow2"
+  pool   = "default"
+  source = "${path.module}/ipfire-golden.qcow2"
+  format = "qcow2"
 }
+  
+
 
 # ─────────────────────────────────────────
 # VM srvsec (IPFire)
 # ─────────────────────────────────────────
 resource "libvirt_domain" "srvsec" {
-  depends_on = [null_resource.prepare_srvsec]
   name       = "srvsec"
   memory     = 2048
   vcpu       = 2
 
   disk {
-    file = "/var/lib/libvirt/images/srvsec-os.qcow2"
+    volume_id = libvirt_volume.srvsec.id
   }
 
   network_interface {

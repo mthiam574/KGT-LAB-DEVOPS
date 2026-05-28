@@ -10,7 +10,9 @@
     ifname: ens4
     type: ethernet
     ip4: "{{ srvdmz_ip }}/{{ srvdmz_mask }}"
-    gw4: "192.168.4.1"
+    routes4:
+      - ip: "192.168.2.0/24"
+        next_hop: "192.168.4.1"
     state: present
     autoconnect: true
  
