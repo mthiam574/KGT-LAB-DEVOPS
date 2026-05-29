@@ -1,6 +1,6 @@
 title: "KGT Lab DevOps"
 description: "Lab DevOps — Terraform · Ansible · OVS · IPFire · KVM/Libvirt"
-theme: just-the-docs
+remote_theme: just-the-docs/just-the-docs
 
 url: "https://mthiam574.github.io"
 baseurl: "/KGT-LAB-DEVOPS"
