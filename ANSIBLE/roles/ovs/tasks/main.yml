@@ -79,17 +79,16 @@
         ovs_bridge br2
         ovs_type OVSPatchPort
         ovs_patch_peer br1-patch1
-  notify: restart networking
+- name: Activation service networking
+  systemd:
+    name: networking
+    enabled: yes
 
-- name: Ports patch br0 br1 et br1 br2
-  command: >
-    ovs-vsctl
-    -- --may-exist add-port br0 br0-patch0
-    -- set interface br0-patch0 type=patch options:peer=br1-patch0
-    -- --may-exist add-port br1 br1-patch0
-    -- set interface br1-patch0 type=patch options:peer=br0-patch0
-    -- --may-exist add-port br1 br1-patch1
-    -- set interface br1-patch1 type=patch options:peer=br2-patch0
-    -- --may-exist add-port br2 br2-patch0
-    -- set interface br2-patch0 type=patch options:peer=br1-patch1
-  changed_when: false
+- name: Montée interfaces OVS
+  command: ifup -a
+  ignore_errors: yes
+
+- name: Attente montée br0
+  wait_for:
+    path: /sys/class/net/br0
+    timeout: 30
