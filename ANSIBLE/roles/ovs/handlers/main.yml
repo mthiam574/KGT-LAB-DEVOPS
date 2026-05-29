@@ -1,5 +1,10 @@
 ---
-- name: restart networking
+- name: restart networkd
   systemd:
-    name: networking
+    name: systemd-networkd
+    state: restarted
+
+- name: restart NetworkManager
+  systemd:
+    name: NetworkManager
     state: restarted
