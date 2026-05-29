@@ -22,8 +22,7 @@
     state: present
     autoconnect: true
     routes4:
-      - ip: "192.168.4.0/24"
-        next_hop: "{{ srvlan_gateway }}"
+      - "192.168.4.0/24 {{ srvlan_gateway }}"
 
 - name: Activation du routage ip_forward
   ansible.posix.sysctl:
@@ -49,3 +48,13 @@
 
 - name: Sauvegarde règles iptables
   shell: iptables-save > /etc/iptables/rules.v4
+
+- name: Activation connexion LAN
+  command: nmcli connection up lan
+  changed_when: false
+  ignore_errors: yes
+
+- name: Activation connexion GREEN  
+  command: nmcli connection up green
+  changed_when: false
+  ignore_errors: yes

@@ -25,3 +25,33 @@
   become: true
   roles:
     - ovs
+
+- name: Validation connectivité
+  hosts: srvlan
+  become: true
+  tasks:
+    - name: Test srvlan → ovs
+      command: ping -c 3 192.168.3.15
+      changed_when: false
+      retries: 10
+      delay: 10
+      register: r
+      until: r.rc == 0
+
+    - name: Test srvlan → srvdmz
+      command: ping -c 3 192.168.4.2
+      changed_when: false
+      retries: 10
+      delay: 10
+      register: r
+      until: r.rc == 0
+
+    - name: Test ovs → vm1
+      command: ping -c 3 192.168.3.2
+      delegate_to: ovs
+      changed_when: false
+
+    - name: Test ovs → vm2
+      command: ping -c 3 192.168.3.4
+      delegate_to: ovs
+      changed_when: false
