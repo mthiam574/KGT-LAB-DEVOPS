@@ -1,0 +1,33 @@
+title: "KGT Lab DevOps"
+description: "Lab DevOps — Terraform · Ansible · OVS · IPFire · KVM/Libvirt"
+theme: just-the-docs
+
+url: "https://mthiam574.github.io"
+baseurl: "/KGT-LAB-DEVOPS"
+
+author:
+  name: "Moustapha THIAM"
+
+color_scheme: light
+search_enabled: true
+heading_anchors: true
+permalink: pretty
+
+aux_links:
+  "GitHub ↗":
+    - "https://github.com/mthiam574/KGT-LAB-DEVOPS"
+aux_links_new_tab: true
+
+nav_sort: order
+footer_content: "Moustapha THIAM · KGT Technologies · 2026"
+back_to_top: true
+back_to_top_text: "Haut de page"
+
+plugins:
+  - jekyll-seo-tag
+
+exclude:
+  - TERRAFORM/
+  - ANSIBLE/
+  - "*.sh"
+  - Gemfile.lock
