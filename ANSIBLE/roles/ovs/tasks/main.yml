@@ -84,7 +84,11 @@
     name: networking
     enabled: yes
 
-- name: Montée interfaces OVS
+- name: Montée interfaces OVS - passe 1
+  command: ifup -a
+  ignore_errors: yes
+
+- name: Montée interfaces OVS - passe 2
   command: ifup -a
   ignore_errors: yes
 
