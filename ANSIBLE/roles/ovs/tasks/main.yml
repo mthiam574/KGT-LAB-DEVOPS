@@ -67,6 +67,11 @@
       Address=192.168.3.15/24
       Gateway=192.168.3.1
 
+- name: Restart systemd-networkd pour appliquer IP br0
+  systemd:
+    name: systemd-networkd
+    state: restarted
+
 - name: Activation ens4 ens5 ens6
   command: "ip link set {{ item }} up"
   loop:
