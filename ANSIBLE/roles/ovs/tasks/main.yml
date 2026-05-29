@@ -1,7 +1,9 @@
 ---
 - name: Installation d Open vSwitch
   apt:
-    name: openvswitch-switch
+    name:
+      - openvswitch-switch
+      - ifupdown
     state: present
     update_cache: yes
 
@@ -11,83 +13,83 @@
     state: started
     enabled: yes
 
-- name: Creation bridge br0
-  openvswitch_bridge:
-    bridge: br0
-    state: present
+- name: Configuration OVS via /etc/network/interfaces
+  copy:
+    dest: /etc/network/interfaces
+    content: |
+      auto lo
+      iface lo inet loopback
 
-- name: Creation bridge br1
-  openvswitch_bridge:
-    bridge: br1
-    state: present
+      auto br0
+      allow-ovs br0
+      iface br0 inet static
+        address 192.168.3.15
+        netmask 255.255.255.0
+        gateway 192.168.3.1
+        ovs_type OVSBridge
+        ovs_ports ens4 br0-patch0
 
-- name: Creation bridge br2
-  openvswitch_bridge:
-    bridge: br2
-    state: present
+      allow-br0 ens4
+      iface ens4 inet manual
+        ovs_bridge br0
+        ovs_type OVSPort
 
-- name: Attachement ens4 a br0
-  openvswitch_port:
-    bridge: br0
-    port: ens4
-    state: present
+      allow-br0 br0-patch0
+      iface br0-patch0 inet manual
+        ovs_bridge br0
+        ovs_type OVSPatchPort
+        ovs_patch_peer br1-patch0
 
-- name: Attachement ens5 a br1
-  openvswitch_port:
-    bridge: br1
-    port: ens5
-    state: present
+      auto br1
+      allow-ovs br1
+      iface br1 inet manual
+        ovs_type OVSBridge
+        ovs_ports ens5 br1-patch0 br1-patch1
 
-- name: Attachement ens6 a br2
-  openvswitch_port:
-    bridge: br2
-    port: ens6
-    state: present
+      allow-br1 ens5
+      iface ens5 inet manual
+        ovs_bridge br1
+        ovs_type OVSPort
+
+      allow-br1 br1-patch0
+      iface br1-patch0 inet manual
+        ovs_bridge br1
+        ovs_type OVSPatchPort
+        ovs_patch_peer br0-patch0
+
+      allow-br1 br1-patch1
+      iface br1-patch1 inet manual
+        ovs_bridge br1
+        ovs_type OVSPatchPort
+        ovs_patch_peer br2-patch0
+
+      auto br2
+      allow-ovs br2
+      iface br2 inet manual
+        ovs_type OVSBridge
+        ovs_ports ens6 br2-patch0
+
+      allow-br2 ens6
+      iface ens6 inet manual
+        ovs_bridge br2
+        ovs_type OVSPort
+
+      allow-br2 br2-patch0
+      iface br2-patch0 inet manual
+        ovs_bridge br2
+        ovs_type OVSPatchPort
+        ovs_patch_peer br1-patch1
+  notify: restart networking
 
 - name: Ports patch br0 br1 et br1 br2
   command: >
     ovs-vsctl
-    -- add-port br0 br0-patch0
+    -- --may-exist add-port br0 br0-patch0
     -- set interface br0-patch0 type=patch options:peer=br1-patch0
-    -- add-port br1 br1-patch0
+    -- --may-exist add-port br1 br1-patch0
     -- set interface br1-patch0 type=patch options:peer=br0-patch0
-    -- add-port br1 br1-patch1
+    -- --may-exist add-port br1 br1-patch1
     -- set interface br1-patch1 type=patch options:peer=br2-patch0
-    -- add-port br2 br2-patch0
+    -- --may-exist add-port br2 br2-patch0
     -- set interface br2-patch0 type=patch options:peer=br1-patch1
-  register: patch_result
-  changed_when: patch_result.rc == 0
-  failed_when: patch_result.rc != 0 and 'already exists' not in patch_result.stderr
-
-- name: Configuration IP br0 via systemd-networkd
-  copy:
-    dest: /etc/systemd/network/10-br0.network
-    content: |
-      [Match]
-      Name=br0
-
-      [Network]
-      Address=192.168.3.15/24
-      Gateway=192.168.3.1
-  notify: restart networkd
-
-- name: Activation br0
-  command: ip link set br0 up
-  changed_when: false
-  
-- name: Activation ens4 ens5 ens6
-  command: "ip link set {{ item }} up"
-  loop:
-    - ens4
-    - ens5
-    - ens6
-  changed_when: false
-
-- name: Test ping srvlan depuis ovs
-  command: ping -c 3 192.168.3.1
-  changed_when: false
-
-- name: Test ping ovs depuis srvlan
-  command: ping -c 3 192.168.3.15
-  delegate_to: srvlan
   changed_when: false
