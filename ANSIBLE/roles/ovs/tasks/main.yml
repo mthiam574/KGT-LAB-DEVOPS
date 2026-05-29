@@ -11,14 +11,6 @@
     state: started
     enabled: yes
 
-- name: NetworkManager ignore interfaces OVS
-  copy:
-    dest: /etc/NetworkManager/conf.d/99-ovs.conf
-    content: |
-      [keyfile]
-      unmanaged-devices=interface-name:ens4;interface-name:ens5;interface-name:ens6;interface-name:br0;interface-name:br1;interface-name:br2
-  notify: restart NetworkManager
-
 - name: Creation bridge br0
   openvswitch_bridge:
     bridge: br0
@@ -74,7 +66,6 @@
       [Network]
       Address=192.168.3.15/24
       Gateway=192.168.3.1
-  notify: restart networkd
 
 - name: Activation ens4 ens5 ens6
   command: "ip link set {{ item }} up"
