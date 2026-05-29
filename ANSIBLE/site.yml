@@ -1,4 +1,14 @@
 ---
+- name: Mise à jour known_hosts
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Scan clés SSH des VMs
+      shell: |
+        ssh-keygen -R {{ hostvars[item].ansible_host }} 2>/dev/null || true
+        ssh-keyscan -H {{ hostvars[item].ansible_host }} >> ~/.ssh/known_hosts
+      loop: "{{ groups['all'] }}"
+
 - name: Configuration commune toutes VMs
   hosts: all
   become: true
