@@ -1,7 +1,11 @@
 ---
 - name: Attente libération lock apt
-  shell: while fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do sleep 5; done
-  timeout: 120
+  shell: |
+    while fuser /var/lib/dpkg/lock-frontend \
+                /var/lib/apt/lists/lock \
+                /var/cache/apt/archives/lock \
+                >/dev/null 2>&1; do sleep 5; done
+  timeout: 300
 
 - name: Mise à jour des paquets
   apt:
