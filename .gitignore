@@ -10,3 +10,4 @@
 
 # Ansible
 vault_pass.txt
+AWX/SCRIPTS/canary-patch/
